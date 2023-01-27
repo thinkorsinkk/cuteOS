@@ -1,6 +1,6 @@
 #include "idt.h"
-#include "util.h"
-
+#include "../lib/util.h"
+#include "handlers.h"
 InterruptDescriptor64 idt[256] __attribute__((aligned(0x80)));
 extern uint64_t trap_stubs[256];
 
@@ -16,7 +16,6 @@ void set_idt_gate(uintptr_t handler, uint8_t cnt) {
     idt[cnt] = descriptor;
 }
 
-extern uint64_t trap_stubs[256];
 
 void init_idt() {
     for (int i = 0; i < 256; i++)
@@ -34,30 +33,26 @@ void load_idt() {
 
 void handle_interrupt(trap_frame *tf)
 {
-    if (tf->vector == 0x06) {
-        for (;;) {
-            __asm__("cli; hlt");
-        }
-    }
+    (*handlers[tf->vector])();
 }
 
 void pic_remap() {
     unsigned char a1, a2;
  
-    a1 = inb(PIC1_DATA);                        // save masks
+    a1 = inb(PIC1_DATA);
     a2 = inb(PIC2_DATA);
- 
-    outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);  // starts the initialization sequence (in cascade mode)
+    
+    outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);
     io_wait();
     outb(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
     io_wait();
-    outb(PIC1_DATA, 32);                 // ICW2: Master PIC vector offset
+    outb(PIC1_DATA, 32);
     io_wait();
-    outb(PIC2_DATA, 40);                 // ICW2: Slave PIC vector offset
+    outb(PIC2_DATA, 40);
     io_wait();
-    outb(PIC1_DATA, 4);                       // ICW3: tell Master PIC that there is a slave PIC at IRQ2 (0000 0100)
+    outb(PIC1_DATA, 4);
     io_wait();
-    outb(PIC2_DATA, 2);                       // ICW3: tell Slave PIC its cascade identity (0000 0010)
+    outb(PIC2_DATA, 2);
     io_wait();
  
     outb(PIC1_DATA, ICW4_8086);
