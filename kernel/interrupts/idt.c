@@ -1,6 +1,5 @@
 #include "idt.h"
 #include "../lib/util.h"
-#include "handlers.h"
 InterruptDescriptor64 idt[256] __attribute__((aligned(0x80)));
 extern uint64_t trap_stubs[256];
 
@@ -33,7 +32,8 @@ void load_idt() {
 
 void handle_interrupt(trap_frame *tf)
 {
-    (*handlers[tf->vector])();
+    printf("EXCEPTION EXCEPTION EXCEPTION | Vector: 0x%x", tf->vector);
+    panic();
 }
 
 void pic_remap() {
