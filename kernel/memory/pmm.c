@@ -3,6 +3,7 @@
 #include "pmm.h"
 #include "../limine.h"
 #include "../lib/printf.h"
+#include "../lib/util.h"
 #define BLOCK_SIZE 32
 
 size_t bitmap_size;
@@ -54,9 +55,7 @@ void init_pmm() {
     }
 
     // Initialize it to empty
-    for (size_t n=0;n<bitmap_size/4;n++) {
-        bitmap[n] = ~0UL;
-    }
+    memset(bitmap, ~0UL, bitmap_size); 
 
     // Mark usable regions as 0
     for (size_t n=0;n<memmap_request.response->entry_count;n++) {

@@ -1,3 +1,4 @@
 limine/
 *.o
 *.d
+.VSCodeCounter

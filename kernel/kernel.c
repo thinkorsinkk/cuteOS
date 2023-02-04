@@ -16,10 +16,9 @@ static void done(void) {
 
 
 void _start(void) {
-    printf("hi\n"); 
     load_idt();
     init_pmm();
     // __asm__("ud2"); 
-    printf("reached");
+    printf("Kernel has been successfully initialized!");
     done();
 }
