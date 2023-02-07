@@ -5,7 +5,7 @@
 #include "../lib/printf.h"
 #include "../lib/util.h"
 
-uint64_t* pml4;
+uint64_t* pml4 = NULL;
 
 static volatile struct limine_hhdm_request memmap_request = {
     .id = LIMINE_HHDM_REQUEST,
@@ -42,7 +42,7 @@ void vmap(uintptr_t virt, uintptr_t phys, PageFlag flags) {
     }
 
     uint64_t* pdp_entry;
-    if (pml4[pml4_offset] & address) {
+    if (pml4[pml4_offset] & PAGEFLAG_PRESENT) {
         pdp_entry = (uint64_t*) to_virt(pml4[pml4_offset] & address);
         pml4[pml4_offset] |= PAGEFLAG_RW | PAGEFLAG_PRESENT;
     }
@@ -53,29 +53,29 @@ void vmap(uintptr_t virt, uintptr_t phys, PageFlag flags) {
     } 
 
     uint64_t* pd_entry;
-    if (pdp_entry[pdp_offset] & address) {
-        pd_entry = (uint64_t*) to_virt(pdp_entry[pd_offset] & address);
-        pdp_entry[pd_offset] |= PAGEFLAG_RW | PAGEFLAG_PRESENT;
+    if (pdp_entry[pdp_offset] & PAGEFLAG_PRESENT) {
+        pd_entry = (uint64_t*) to_virt(pdp_entry[pdp_offset] & address);
+        pdp_entry[pdp_offset] |= PAGEFLAG_RW | PAGEFLAG_PRESENT;
     }
     else {
         pd_entry = (uint64_t*)alloc();
-        memset(pdp_entry, 0, 0x1000);
+        memset(pd_entry, 0, 0x1000);
         pdp_entry[pdp_offset] |= to_phys((uint64_t)pd_entry) | PAGEFLAG_RW | PAGEFLAG_PRESENT;
     }
 
     uint64_t* pt_entry;
-    if (pd_entry[pd_offset] & address) {
+    if (pd_entry[pd_offset] & PAGEFLAG_PRESENT) {
 		pt_entry = (uint64_t*) to_virt(pd_entry[pd_offset] & 0x000FFFFFFFFFF000);
         pd_entry[pd_offset] |= PAGEFLAG_RW | PAGEFLAG_PRESENT;
 	}
 	else {
 		pt_entry = (uint64_t*)alloc();
 		memset(pt_entry, 0, 0x1000);
-        pd_entry[pd_offset] |= to_phys((uint64_t)pt_entry | PAGEFLAG_RW | PAGEFLAG_PRESENT);
+        pd_entry[pd_offset] |= to_phys((uint64_t)pt_entry) | PAGEFLAG_RW | PAGEFLAG_PRESENT;
 	}
 
-    printf("Entry: %X\n", pt_entry);
-    printf("Offset: %X\n", pt_offset);
+    printf("Entry: %lX\n", pt_entry);
+    printf("Offset: %lX\n", pt_offset);
     pt_entry[pt_offset] = phys | flags;
 }
 
@@ -106,7 +106,7 @@ void init_mem() {
     }
     for (size_t x=0;x<10;x++) {
         void* shit = alloc();
-        printf("%x\n", shit);
+        printf("%lX\n", shit);
     }
     printf("Memory has been initialized successfully\n");
 }
