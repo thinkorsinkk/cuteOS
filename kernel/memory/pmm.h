@@ -13,11 +13,15 @@
 #define LIMINE_MEMMAP_FRAMEBUFFER            7
 
 #include <stdint.h>
+#include <stddef.h>
 
-void* pmm_alloc(void);
-void pmm_free(void* page);
+typedef struct Node {
+    struct Node* next;
+} Node;
+
+void add_mem(uintptr_t base, size_t size);
+void* alloc();
+void dealloc(void* ptr);
 void init_pmm(void);
-void set_region(unsigned idx, unsigned len);
-void clear_bit(unsigned idx);
 
 #endif

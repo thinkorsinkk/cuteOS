@@ -1,5 +1,6 @@
 #include "util.h"
 #include <stddef.h>
+#include <stdint.h>
 
 void outb(unsigned short port, unsigned char data) {
     __asm__ __volatile__ ("outb %1, %0" : : "dN" (port), "a" (data));

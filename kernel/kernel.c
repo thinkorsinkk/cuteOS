@@ -3,7 +3,7 @@
 #include <limine.h>
 #include "interrupts/idt.h"
 #include "lib/printf.h"
-#include "memory/pmm.h"
+#include "memory/vmm.h"
 // The Limine requests can be placed anywhere, but it is important that
 // the compiler does not optimise them away, so, usually, they should
 // be made volatile or equivalent.
@@ -17,8 +17,7 @@ static void done(void) {
 
 void _start(void) {
     load_idt();
-    init_pmm();
-    // __asm__("ud2"); 
+    init_mem();
     printf("Kernel has been successfully initialized!");
     done();
 }

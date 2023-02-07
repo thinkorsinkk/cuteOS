@@ -1,5 +1,6 @@
 #include "idt.h"
 #include "../lib/util.h"
+#include "../lib/printf.h"
 InterruptDescriptor64 idt[256] __attribute__((aligned(0x80)));
 extern uint64_t trap_stubs[256];
 
@@ -28,6 +29,7 @@ void load_idt() {
     init_idt();
     pic_remap();
     __asm__("lidt %0"::"m"(idtr));
+    printf("IDT has been initialized successfully\n");
 }
 
 void handle_interrupt(trap_frame *tf)
