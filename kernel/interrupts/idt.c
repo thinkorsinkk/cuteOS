@@ -29,12 +29,12 @@ void load_idt() {
     init_idt();
     pic_remap();
     __asm__("lidt %0"::"m"(idtr));
-    printf("IDT has been initialized successfully\n");
+    printf("IDT has been successfully initialized!\n");
 }
 
 void handle_interrupt(trap_frame *tf)
 {
-    printf("EXCEPTION EXCEPTION EXCEPTION | Vector: 0x%x", tf->vector);
+    printf(RED "EXCEPTION EXCEPTION EXCEPTION | Vector: 0x%X\n" RESET, tf->vector);
     panic();
 }
 

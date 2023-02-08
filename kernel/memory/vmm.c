@@ -74,8 +74,6 @@ void vmap(uintptr_t virt, uintptr_t phys, PageFlag flags) {
         pd_entry[pd_offset] |= to_phys((uint64_t)pt_entry) | PAGEFLAG_RW | PAGEFLAG_PRESENT;
 	}
 
-    printf("Entry: %lX\n", pt_entry);
-    printf("Offset: %lX\n", pt_offset);
     pt_entry[pt_offset] = phys | flags;
 }
 
@@ -95,6 +93,7 @@ extern char DATA_END[];
 
 void init_mem() {
     init_pmm();
+    printf("Physical Memory Manager has been successfully initialized!\n");
     for (uintptr_t i = (uintptr_t) TEXT_START; i < (uintptr_t) TEXT_END; i += 0x1000) {
         vmap(i, kernel_address_request.response->physical_base + (i - kernel_address_request.response->virtual_base), PAGEFLAG_PRESENT);
     }
@@ -104,9 +103,5 @@ void init_mem() {
     for (uintptr_t i = (uintptr_t) DATA_START; i < (uintptr_t) DATA_END; i += 0x1000) {
         vmap(i, kernel_address_request.response->physical_base + (i - kernel_address_request.response->virtual_base), PAGEFLAG_NX | PAGEFLAG_RW | PAGEFLAG_PRESENT);
     }
-    for (size_t x=0;x<10;x++) {
-        void* shit = alloc();
-        printf("%lX\n", shit);
-    }
-    printf("Memory has been initialized successfully\n");
+    printf("Virtual Memory Manager has been successfully initialized!\n");
 }
