@@ -2,5 +2,6 @@
 - [x] Hello World
 - [x] IDT
 - [x] Physical Memory Manager
-- [ ] Virtual Memory Manager (in the making rn)
+- [x] Virtual Memory Manager
+- [ ] PS/2 Keyboard
 - [ ] APIC shit
