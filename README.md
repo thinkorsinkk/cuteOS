@@ -1,4 +1,4 @@
-# CuteOS
+# kawaiiOS
 - [x] Hello World
 - [x] IDT
 - [x] Physical Memory Manager
