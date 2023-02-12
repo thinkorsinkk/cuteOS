@@ -1,9 +1,13 @@
 #include "idt.h"
 #include "../lib/util.h"
 #include "../lib/printf.h"
+#include "handlers.h"
+
 InterruptDescriptor64 idt[256] __attribute__((aligned(0x80)));
 extern uint64_t trap_stubs[256];
 
+
+// Set a specific gate in the IDT
 void set_idt_gate(uintptr_t handler, uint8_t cnt) {
     InterruptDescriptor64 descriptor;
     descriptor.m_offsetLow  = handler & 0xFFFF;
@@ -16,12 +20,13 @@ void set_idt_gate(uintptr_t handler, uint8_t cnt) {
     idt[cnt] = descriptor;
 }
 
-
+// Initializes the IDT with all the stubs
 void init_idt() {
     for (int i = 0; i < 256; i++)
         set_idt_gate(trap_stubs[i], i);
 }
 
+// Loads the IDT
 void load_idt() {
     idtr idtr;
     idtr.base = (uint64_t)&idt;
@@ -32,12 +37,22 @@ void load_idt() {
     printf("IDT has been successfully initialized!\n");
 }
 
+// Matches interrupt vector to a handler
 void handle_interrupt(trap_frame *tf)
-{
-    printf(RED "EXCEPTION EXCEPTION EXCEPTION | Vector: 0x%X\n" RESET, tf->vector);
-    panic();
+{  
+    switch(tf->vector) {
+        case DF:
+            double_fault_interrupt(tf->rip);
+        case GP:
+            general_protection_fault_interrupt(tf->rip);
+        case PF:
+            page_fault_interrupt(tf->rip);
+        case KBD:
+            keyboard_interrupt();
+    } 
 }
 
+// Remaps the PIC
 void pic_remap() {
     unsigned char a1, a2;
  

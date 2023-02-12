@@ -2,6 +2,7 @@
 #define IDT_H
 
 #include <stdint.h>
+
 #define PIC1		0x20		/* IO base address for master PIC */
 #define PIC2		0xA0		/* IO base address for slave PIC */
 #define PIC1_COMMAND	PIC1
@@ -58,14 +59,6 @@ typedef struct trap_frame {
     uint64_t ss;
 }__attribute__((__packed__)) trap_frame;
 
-typedef struct InterruptFrame {
-    uint64_t ip;
-    uint64_t cs;
-    uint64_t flags;
-    uint64_t sp;
-    uint64_t ss;
-} __attribute__((__packed__)) InterruptFrame;
-
 typedef struct idtr {
     // sizeof(idt)-1
     uint16_t limit;
@@ -73,6 +66,7 @@ typedef struct idtr {
     uintptr_t base;
 } __attribute__((__packed__)) idtr;
 
+void keeb_init();
 void set_idt_gate(uintptr_t handler, uint8_t cnt);
 void load_idt();
 void handle_interrupt(struct trap_frame *tf);

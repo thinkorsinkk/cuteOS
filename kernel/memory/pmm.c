@@ -6,8 +6,13 @@
 #include "../lib/printf.h"
 #include "../lib/util.h"
 
+/*
+Freelist-based physical memory manager
+Linear (O(1)) complexity */
+
 Node* root = NULL;
 
+// Function to add an entry to the freelist
 void add_mem(uintptr_t base, size_t size) {
     size_t pages = size / 0x1000; 
     for (size_t i = 0; i < pages; ++i) {
@@ -17,6 +22,7 @@ void add_mem(uintptr_t base, size_t size) {
     }
 }
 
+// Allocates 1 page of memory
 void* alloc() {
     Node* node = root;
     if (!node) return NULL;
@@ -24,12 +30,14 @@ void* alloc() {
     return (void*)(uintptr_t)node;
 }
 
+// Deallocates a specific page
 void dealloc(void* ptr) {
     Node* node = (Node*)(uintptr_t) ptr;
     node->next = root;
     root = node;
 }
 
+// Loads usable memory chunks into the freelist
 void init_pmm() {
     static volatile struct limine_memmap_request memmap_request = {
         .id = LIMINE_MEMMAP_REQUEST,

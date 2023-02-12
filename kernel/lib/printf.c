@@ -26,7 +26,6 @@ int printf(const char *format, ...)
     length = vsnprintf(buffer, PRINT_BUFFER_SIZE, format, args);
     terminal = terminal_request.response->terminals[0];
     terminal_request.response->write(terminal, buffer, length);
-
     va_end(args);
 
     return length;

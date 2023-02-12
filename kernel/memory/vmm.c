@@ -12,14 +12,17 @@ static volatile struct limine_hhdm_request memmap_request = {
     .revision = 0
 };
 
+// Converts physical to virtual address using the HHDM offset
 uint64_t to_virt(uint64_t phys) {
     return phys + memmap_request.response->offset;
 }
 
+// Converts virtual to physical address using the HHDM offset
 uint64_t to_phys(uint64_t virt) {
     return virt - memmap_request.response->offset;
 }
 
+// Maps a physical address to a virtual address
 void vmap(uintptr_t virt, uintptr_t phys, PageFlag flags) {
     phys &= ~(0xFFF);
 
@@ -68,7 +71,7 @@ void vmap(uintptr_t virt, uintptr_t phys, PageFlag flags) {
 		pt_entry = (uint64_t*) to_virt(pd_entry[pd_offset] & 0x000FFFFFFFFFF000);
         pd_entry[pd_offset] |= PAGEFLAG_RW | PAGEFLAG_PRESENT;
 	}
-	else {
+    else {
 		pt_entry = (uint64_t*)alloc();
 		memset(pt_entry, 0, 0x1000);
         pd_entry[pd_offset] |= to_phys((uint64_t)pt_entry) | PAGEFLAG_RW | PAGEFLAG_PRESENT;
@@ -91,6 +94,7 @@ extern char RODATA_END[];
 extern char DATA_START[];
 extern char DATA_END[];
 
+// Maps .TEXT, .RODATA and .DATA sections
 void init_mem() {
     init_pmm();
     printf("Physical Memory Manager has been successfully initialized!\n");
