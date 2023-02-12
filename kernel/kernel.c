@@ -11,9 +11,9 @@ static void done(void) {
     }
 }
 
+// Initialize kernel
 void _start(void) {
     load_idt();
-    __asm__("ud2");
     init_mem();
     printf(GRN "\nKernel has been successfully initialized!\n" RESET);
     done();
