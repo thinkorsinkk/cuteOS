@@ -3,5 +3,5 @@
 - [x] IDT
 - [x] Physical Memory Manager
 - [x] Virtual Memory Manager
-- [ ] PS/2 Keyboard
+- [x] PS/2 Keyboard
 - [ ] APIC shit
