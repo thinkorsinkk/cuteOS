@@ -3,11 +3,6 @@
 #include "../lib/util.h"
 #include <stdint.h>
 
-void keyboard_interrupt() {
-	printf("KEEB INTERRUPT\n");
-	panic();
-}
-
 // GP handler
 void general_protection_fault_interrupt(uint64_t ip) {
 	printf(RED "GP | V=0x0D | IP=0x%llX\n" RESET, ip);

@@ -2,6 +2,7 @@
 #include "../lib/util.h"
 #include "../lib/printf.h"
 #include "handlers.h"
+#include "kbd.h"
 
 InterruptDescriptor64 idt[256] __attribute__((aligned(0x80)));
 extern uint64_t trap_stubs[256];
@@ -34,6 +35,7 @@ void load_idt() {
     init_idt();
     pic_remap();
     __asm__("lidt %0"::"m"(idtr));
+    __asm__("sti");
     printf("IDT has been successfully initialized!\n");
 }
 
@@ -79,4 +81,43 @@ void pic_remap() {
  
     outb(PIC1_DATA, a1);   // restore saved masks.
     outb(PIC2_DATA, a2);
+}
+
+// Sets mask for IRQ
+void IRQ_set_mask(unsigned char IRQline) {
+    uint16_t port;
+    uint8_t value;
+ 
+    if(IRQline < 8) {
+        port = PIC1_DATA;
+    } else {
+        port = PIC2_DATA;
+        IRQline -= 8;
+    }
+    value = inb(port) | (1 << IRQline);
+    outb(port, value);        
+}
+ 
+// Clears mask for IRQ
+void IRQ_clear_mask(unsigned char IRQline) {
+    uint16_t port;
+    uint8_t value;
+ 
+    if(IRQline < 8) {
+        port = PIC1_DATA;
+    } else {
+        port = PIC2_DATA;
+        IRQline -= 8;
+    }
+    value = inb(port) & ~(1 << IRQline);
+    outb(port, value);        
+}
+
+// Sends EOI (must be done at the end of an IRQ)
+void PIC_sendEOI(unsigned char irq)
+{
+    if(irq >= 8)
+        outb(PIC2_COMMAND,PIC_EOI);
+ 
+    outb(PIC1_COMMAND,PIC_EOI);
 }

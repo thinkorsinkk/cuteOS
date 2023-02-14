@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define PIC_EOI     0x20        /* End-of-interrupt command code */
+
 #define PIC1		0x20		/* IO base address for master PIC */
 #define PIC2		0xA0		/* IO base address for slave PIC */
 #define PIC1_COMMAND	PIC1
@@ -72,4 +74,8 @@ void load_idt();
 void handle_interrupt(struct trap_frame *tf);
 void init_idt();
 void pic_remap();
+void IRQ_set_mask(unsigned char IRQline);
+void IRQ_clear_mask(unsigned char IRQline);
+void PIC_sendEOI(unsigned char irq);
+
 #endif
