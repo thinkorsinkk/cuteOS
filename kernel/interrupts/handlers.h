@@ -3,10 +3,14 @@
 
 #include <stdint.h>
 
+// ISR
 #define GP 0x0D
 #define PF 0x0E
 #define DF 0x08
+
+// IRQ
 #define KBD 0x21
+#define PIT 0x20
 
 void keyboard_interrupt();
 void general_protection_fault_interrupt(uint64_t ip);

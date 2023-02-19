@@ -5,7 +5,7 @@
 #include "lib/printf.h"
 #include "memory/vmm.h"
 #include "lib/util.h"
-#include "interrupts/kbd.h"
+#include "drivers/kbd.h"
 
 static void done(void) {
     for (;;) {
@@ -17,7 +17,7 @@ static void done(void) {
 void _start(void) {
     load_idt();
     init_mem();
-    init_kbd();
+    // init_kbd();
     printf(GRN "\nKernel has been successfully initialized!\n" RESET);
     done();
 }

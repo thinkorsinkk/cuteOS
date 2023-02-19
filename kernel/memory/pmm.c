@@ -8,7 +8,8 @@
 
 /*
 Freelist-based physical memory manager
-Linear (O(1)) complexity */
+Linear (O(1)) complexity 
+*/
 
 Node* root = NULL;
 
@@ -37,12 +38,10 @@ void dealloc(void* ptr) {
     root = node;
 }
 
+extern volatile struct limine_memmap_request memmap_request;
+
 // Loads usable memory chunks into the freelist
 void init_pmm() {
-    static volatile struct limine_memmap_request memmap_request = {
-        .id = LIMINE_MEMMAP_REQUEST,
-        .revision = 0
-    };
     for (size_t n=0;n<memmap_request.response->entry_count;n++) {
         if (memmap_request.response->entries[n]->type==LIMINE_MEMMAP_USABLE) {
             add_mem(memmap_request.response->entries[n]->base, memmap_request.response->entries[n]->length);

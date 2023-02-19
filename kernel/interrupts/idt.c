@@ -1,12 +1,12 @@
 #include "idt.h"
+#include "handlers.h"
 #include "../lib/util.h"
 #include "../lib/printf.h"
-#include "handlers.h"
-#include "kbd.h"
+#include "../drivers/kbd.h"
+#include "../drivers/pit.h"
 
 InterruptDescriptor64 idt[256] __attribute__((aligned(0x80)));
 extern uint64_t trap_stubs[256];
-
 
 // Set a specific gate in the IDT
 void set_idt_gate(uintptr_t handler, uint8_t cnt) {
@@ -35,7 +35,8 @@ void load_idt() {
     init_idt();
     pic_remap();
     __asm__("lidt %0"::"m"(idtr));
-    __asm__("sti");
+    // __asm__("sti");
+    // IRQ_clear_mask(0);
     printf("IDT has been successfully initialized!\n");
 }
 
@@ -51,6 +52,11 @@ void handle_interrupt(trap_frame *tf)
             page_fault_interrupt(tf->rip);
         case KBD:
             keyboard_interrupt();
+        case PIT:
+            pit_handler();
+        default:
+            printf("interrupt %llx", tf->vector);
+            panic();
     } 
 }
 

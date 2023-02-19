@@ -1,11 +1,11 @@
 #include <stdint.h>
 #include "../lib/util.h"
 #include "../lib/printf.h"
-#include "idt.h"
+#include "../interrupts/idt.h"
 #include "kbd.h"
 
 char scancodes[256] = {
-	[0x02] = '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=',
+	[0x02] = '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
 	[0x10] = 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
 	[0x1E] = 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`',
 	[0x2B] = '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/',
