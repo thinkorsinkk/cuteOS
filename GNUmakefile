@@ -6,7 +6,7 @@ all-hdd: barebones.hdd
 
 .PHONY: run
 run: barebones.iso
-	qemu-system-x86_64 -m 2G -cdrom barebones.iso -boot d -D log.txt -d int -M smm=off -no-shutdown -no-reboot -serial stdio
+	qemu-system-x86_64 -m 2G -cdrom barebones.iso -boot d -D log.txt -d int -M smm=off -no-shutdown -no-reboot -serial stdio -s -S
 
 .PHONY: run-uefi
 run-uefi: ovmf-x64 barebones.iso

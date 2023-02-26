@@ -6,9 +6,9 @@
 uint32_t ticks = 0;
 
 void pit_handler() {
-	ticks++;
-	if (!(ticks % 18)) {
-		printf("one second has passed");
-	}
-	PIC_sendEOI(0);
+    ticks++;
+    if (!(ticks % 18)) {
+        printf("one second has passed");
+    }
+    PIC_sendEOI(0);
 }

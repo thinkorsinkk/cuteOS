@@ -1,11 +1,6 @@
-#include <stdint.h>
-#include <stddef.h>
-#include "limine.h"
 #include "interrupts/idt.h"
 #include "lib/printf.h"
 #include "memory/vmm.h"
-#include "lib/util.h"
-#include "drivers/kbd.h"
 
 static void done(void) {
     for (;;) {
@@ -13,7 +8,7 @@ static void done(void) {
     }
 }
 
-// Initialize kernel
+// Actual _start is in kern.asm, creates the new stack and loads it
 void _start(void) {
     load_idt();
     init_mem();

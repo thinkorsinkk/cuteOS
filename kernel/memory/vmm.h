@@ -16,20 +16,25 @@
 #define LIMINE_MEMMAP_KERNEL_AND_MODULES     6
 #define LIMINE_MEMMAP_FRAMEBUFFER            7
 
+#define PAGESIZE 0x1000
+
 typedef enum {
-	PAGEFLAG_PRESENT = 1 << 0,
-	PAGEFLAG_RW = 1 << 1,
-	PAGEFLAG_USER = 1 << 2,
-	PAGEFLAG_WRITE_THROUGH = 1 << 3,
-	PAGEFLAG_CACHE_DISABLE = 1 << 4,
-	PAGEFLAG_HUGE_PAGE = 1 << 7,
-	PAGEFLAG_GLOBAL = 1 << 8,
-	PAGEFLAG_NX = 1 << 63
+    PAGEFLAG_PRESENT = 1 << 0,
+    PAGEFLAG_RW = 1 << 1,
+    PAGEFLAG_USER = 1 << 2,
+    PAGEFLAG_WRITE_THROUGH = 1 << 3,
+    PAGEFLAG_CACHE_DISABLE = 1 << 4,
+    PAGEFLAG_HUGE_PAGE = 1 << 7,
+    PAGEFLAG_GLOBAL = 1 << 8,
+    PAGEFLAG_NX = 1 << 63
 } PageFlag;
 
 uint64_t to_virt(uint64_t phys);
+
 uint64_t to_phys(uint64_t virt);
-void vmap(uint64_t physical_address, uint64_t virtual_address, PageFlag flags);
+
+void vmap(uintptr_t physical_address, uintptr_t virtual_address, PageFlag flags);
+
 void init_mem();
 
 #endif

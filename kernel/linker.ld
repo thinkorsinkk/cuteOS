@@ -18,26 +18,25 @@ SECTIONS
 {
     . = 0xffffffff80000000;
 
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
     PROVIDE(TEXT_START = .);
     .text : {*(.text*)}
     PROVIDE(TEXT_END = .);
 
-    . += CONSTANT(MAXPAGESIZE);
-
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
     PROVIDE(RODATA_START = .);
     .rodata : {*(.rodata*)}
     PROVIDE(RODATA_END = .);
 
-    . += CONSTANT(MAXPAGESIZE);
-
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
     PROVIDE(DATA_START = .);
     .data : {*(.data*)}
     PROVIDE(DATA_END = .);
 
-    .bss : {
-        *(COMMON)
-        *(.bss .bss.*)
-    } :data
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+    PROVIDE(BSS_START = .);
+    .bss : {*(.bss*)}
+    PROVIDE(BSS_END = .);
 
     /DISCARD/ : {
         *(.eh_frame)
